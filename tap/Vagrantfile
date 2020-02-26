@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.box_check_update = true
+
+  config.vm.provision "shell", inline: <<-SHELL
+    set -x
+    	sudo yum update
+        sudo yum install epel-release -y	
+	sudo yum install net-tools ifconfig tcpdump -y
+	sudo sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config	
+  SHELL
+
+  config.vm.define "vpnservertap", primary: true do |s|
+    s.vm.hostname = 'vpnservertap'
+    s.vm.network "private_network", ip: "192.168.15.10"
+    s.vm.provision "shell", inline: <<-SHELL
+    sudo ip link add tap0 type gretap local 192.168.15.10 remote 192.168.15.11
+    sudo ip address add 10.0.0.10/24 dev tap0
+    sudo ip link set tap0 up
+    SHELL
+  end
+
+  config.vm.define "vpnclienttap" do |c|
+    c.vm.hostname = 'vpnclienttap'
+    c.vm.network "private_network", ip: "192.168.15.11"
+    c.vm.provision "shell", inline: <<-SHELL
+    sudo ip link add tap0 type gretap local 192.168.15.11 remote 192.168.15.10
+    sudo ip address add 10.0.0.11/24 dev tap0
+    sudo ip link set tap0 up
+    SHELL
+   end
+  end
