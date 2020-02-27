@@ -1,8 +1,16 @@
 # VPN_OpenVpn   
-[tun\Vagrantfile](https://github.com/Hanafeevrus/VPN_OpenVpn/tree/master/tun) поднимает 2 машины с настроенным туннелем в режиме tun.   
+### Задача    
+1. Между двумā виртуалками поднāтþ vpn в режимах:
+- tun
+- tap   
+2. Поднять RAS на базе OpenVPN с клиентскими сертификатами,
+подключиться с локальной машины на виртуалку.   
+
+### Решение   
+1. [tun\Vagrantfile](https://github.com/Hanafeevrus/VPN_OpenVpn/tree/master/tun) поднимает 2 машины с настроенным туннелем в режиме tun.   
 [tap\Vagrantfile](https://github.com/Hanafeevrus/VPN_OpenVpn/tree/master/tap) поднимает 2 машины с настроенным туннелем в режиме tap.   
 
-##### TUN   
+### TUN   
 TUN (сетевой туннель) работает на сетевом уровне модели OSI, оперируя IP пакетами в следствии чего broadcast    
 и multicast не работает. Проверить можно следующим образом.   
 ```
@@ -17,7 +25,7 @@ Interface "tun1" is not ARPable
        valid_lft forever preferred_lft forever
  ```    
  
-##### TAP   
+### TAP   
 TAP эмулирует Ethernet устройство и работает на канальном уровне модели OSI, оперируя кадрами Ethernet.   
 Работает broadcast, multicast и loopback. Интерфейсу присваивается MAC. Проверить можно следующим образом. При проверке ARP запроса   
 должен отобразится в Unicast ответе MAC адрес.
